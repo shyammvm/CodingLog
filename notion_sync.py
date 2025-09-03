@@ -37,16 +37,16 @@ def get_git_link(filepath):
     ).stdout.strip()
     return f"{repo_url}/blob/{branch}/{filepath}"
 
-def get_commit_date():
-    """Get latest commit date in ISO format"""
+def get_file_commit_date(filepath):
+    """Get the last commit date for a specific file"""
     result = subprocess.run(
-        ["git", "log", "-1", "--format=%aI"],
+        ["git", "log", "-1", "--format=%aI", "--", filepath],
         capture_output=True, text=True
     )
     return result.stdout.strip()
 
 def parse_metadata(filepath):
-    """Extract Problem, Link, Difficulty from markdown"""
+    """Extract Problem, Link, Difficulty, Topic from markdown + folder structure"""
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -131,17 +131,24 @@ def send_to_notion(problem, link, difficulty, date, git_link, topic):
 # ----------------- MAIN -----------------
 if __name__ == "__main__":
     logging.info("Starting Notion sync...")
-    commit_date = get_commit_date()
     all_files = glob.glob("Problems/**/*.md", recursive=True)
     logging.info(f"Found {len(all_files)} markdown files in Problems folder.")
 
     for file in all_files:
         meta = parse_metadata(file)
         git_link = get_git_link(file)
+        file_commit_date = get_file_commit_date(file)
 
         if not page_exists(meta["problem"]):
             logging.info(f"Adding new problem: {meta['problem']}")
-            send_to_notion(meta["problem"], meta["link"], meta["difficulty"], commit_date, git_link, meta["topic"])
+            send_to_notion(
+                meta["problem"],
+                meta["link"],
+                meta["difficulty"],
+                file_commit_date,   # 👈 file-specific commit date
+                git_link,
+                meta["topic"]
+            )
         else:
             logging.warning(f"{meta['problem']} already exists in Notion, skipping.")
 
