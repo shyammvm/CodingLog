@@ -1,4 +1,5 @@
-# Brute force
+### Brute force
+```
 class Solution:
     def characterReplacement(self, s: str, k: int) -> int:
         l = len(s)
@@ -19,8 +20,9 @@ class Solution:
                     return w
                 start += 1
                 end = start + w
-
-#O(n): sliding window
+```
+### O(n): sliding window
+```
 class Solution:
     def characterReplacement(self, s: str, k: int) -> int:
         from collections import defaultdict
@@ -41,4 +43,4 @@ class Solution:
             result = max(result, right - left + 1)
 
         return result
-
+```

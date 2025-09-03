@@ -1,3 +1,4 @@
+```
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
         if len(s) == 1:
@@ -13,4 +14,5 @@ class Solution:
                 temp = temp[temp.index(i)+1:] + i
                 
         return max(maxlen, len(temp))
+```
             

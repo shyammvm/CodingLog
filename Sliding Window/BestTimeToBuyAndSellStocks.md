@@ -1,3 +1,4 @@
+```
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
         minval = float('inf')
@@ -9,3 +10,4 @@ class Solution:
                 maxprofit = i - minval
                 
         return maxprofit
+```
