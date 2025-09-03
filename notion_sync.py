@@ -37,12 +37,33 @@ def get_git_link(filepath):
     return f"{repo_url}/blob/{branch}/{filepath}"
 
 def get_file_commit_date(filepath):
-    """Get the last commit date for a specific file (ISO format)"""
-    result = subprocess.run(
-        ["git", "log", "-1", "--format=%aI", "--", filepath],
-        capture_output=True, text=True
-    )
-    return result.stdout.strip()
+    """
+    Get the last commit date (ISO format) for a specific file.
+    Works even if script is run from a different directory.
+    """
+    try:
+        # find repo root
+        repo_root = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            capture_output=True, text=True, check=True
+        ).stdout.strip()
+
+        # make filepath relative to repo root
+        rel_path = os.path.relpath(filepath, repo_root)
+
+        # get last commit for this file
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%aI", "--", rel_path],
+            cwd=repo_root,
+            capture_output=True, text=True, check=True
+        )
+        date = result.stdout.strip()
+        if not date:
+            return None  # file has no commits
+        return date
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Git error for {filepath}: {e}")
+        return None
 
 def parse_metadata(filepath):
     """Extract Problem, Link, Difficulty, Topic from markdown + folder structure"""
@@ -138,6 +159,9 @@ if __name__ == "__main__":
         meta = parse_metadata(file)
         git_link = get_git_link(file)
         file_commit_date = get_file_commit_date(file)
+        if not file_commit_date:
+            logging.info(f"No commit found for {file}, skipping update")
+            continue
 
         page_id, existing_last_solved = find_page(meta["problem"])
 
