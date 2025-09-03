@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "Problems/**/*.md"
+      - ".github/workflows/notion-sync.yml"
 
 jobs:
   sync:
