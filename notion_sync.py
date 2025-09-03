@@ -25,7 +25,6 @@ logging.basicConfig(
 
 # ----------------- HELPERS -----------------
 def get_git_link(filepath):
-    """Generate GitHub file link"""
     repo_url = subprocess.run(
         ["git", "config", "--get", "remote.origin.url"],
         capture_output=True, text=True
@@ -38,7 +37,7 @@ def get_git_link(filepath):
     return f"{repo_url}/blob/{branch}/{filepath}"
 
 def get_file_commit_date(filepath):
-    """Get the last commit date for a specific file"""
+    """Get the last commit date for a specific file (ISO format)"""
     result = subprocess.run(
         ["git", "log", "-1", "--format=%aI", "--", filepath],
         capture_output=True, text=True
@@ -54,7 +53,6 @@ def parse_metadata(filepath):
     link = re.search(r"^\s*#?\s*Link:\s*(.+)", content, re.MULTILINE)
     diff = re.search(r"^\s*#?\s*Difficulty:\s*(.+)", content, re.MULTILINE)
 
-    # Extract topic from folder (Problems/<Topic>/file.md)
     folder = os.path.basename(os.path.dirname(filepath))
     topic = folder if folder and folder != "Problems" else "General"
 
@@ -65,41 +63,34 @@ def parse_metadata(filepath):
         "topic": topic
     }
 
-def page_exists(problem_name):
-    """Check if a page with this Problem already exists"""
+def find_page(problem_name):
+    """Return page_id and Last Solved value if it exists"""
     url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
     payload = {
-        "filter": {
-            "property": "Problem",
-            "title": {
-                "equals": problem_name
-            }
-        }
+        "filter": {"property": "Problem", "title": {"equals": problem_name}}
     }
     response = requests.post(url, headers=HEADERS, json=payload)
     if response.status_code != 200:
         logging.error(f"Failed to query Notion for {problem_name}: {response.text}")
-        return False
+        return None, None
     results = response.json().get("results", [])
-    return len(results) > 0
+    if results:
+        page = results[0]
+        last_solved = page["properties"].get("Last Solved", {}).get("date", {}).get("start")
+        return page["id"], last_solved
+    return None, None
 
-def send_to_notion(problem, link, difficulty, date, git_link, topic):
-    """Create a new page in Notion"""
-    url = "https://api.notion.com/v1/pages"
-
-    # --- Normalize Last Solved date to YYYY-MM-DD ---
+def build_properties(problem, link, difficulty, date, git_link, topic):
+    """Common properties payload"""
     solved_date_obj = None
+    solved_date = None
     if date:
         try:
             solved_date_obj = datetime.fromisoformat(date.replace("Z", "+00:00"))
-            solved_date = solved_date_obj.date().isoformat()  # <-- strip time
+            solved_date = solved_date_obj.date().isoformat()
         except Exception as e:
-            logging.error(f"❌ Failed to parse Last Solved date: {e}")
-            solved_date = None
-    else:
-        solved_date = None
+            logging.error(f"Failed to parse date {date}: {e}")
 
-    # --- Compute Next Revision Date (only date part) ---
     next_revision = None
     if solved_date_obj:
         if difficulty.lower() == "easy":
@@ -109,24 +100,33 @@ def send_to_notion(problem, link, difficulty, date, git_link, topic):
         elif difficulty.lower() == "hard":
             next_revision = (solved_date_obj + timedelta(days=7)).date().isoformat()
 
-    data = {
-        "parent": {"database_id": DATABASE_ID},
-        "properties": {
-            "Problem": {"title": [{"text": {"content": problem}}]},
-            "Problem Link": {"url": link if link else None},
-            "Difficulty": {"select": {"name": difficulty}},
-            "Topic": {"select": {"name": topic}},
-            "Last Solved": {"date": {"start": solved_date}} if solved_date else {},
-            "Next Revision Date": {"date": {"start": next_revision}} if next_revision else {},
-            "Git Link": {"url": git_link}
-        }
+    return {
+        "Problem": {"title": [{"text": {"content": problem}}]},
+        "Problem Link": {"url": link if link else None},
+        "Difficulty": {"select": {"name": difficulty}},
+        "Topic": {"select": {"name": topic}},
+        "Last Solved": {"date": {"start": solved_date}} if solved_date else {},
+        "Next Revision Date": {"date": {"start": next_revision}} if next_revision else {},
+        "Git Link": {"url": git_link}
     }
 
+def create_page(problem, link, difficulty, date, git_link, topic):
+    url = "https://api.notion.com/v1/pages"
+    data = {"parent": {"database_id": DATABASE_ID}, "properties": build_properties(problem, link, difficulty, date, git_link, topic)}
     response = requests.post(url, headers=HEADERS, json=data)
     if response.status_code != 200:
         logging.error(f"Failed to add {problem}: {response.text}")
     else:
         logging.info(f"✅ Added {problem} to Notion")
+
+def update_page(page_id, problem, link, difficulty, date, git_link, topic):
+    url = f"https://api.notion.com/v1/pages/{page_id}"
+    data = {"properties": build_properties(problem, link, difficulty, date, git_link, topic)}
+    response = requests.patch(url, headers=HEADERS, json=data)
+    if response.status_code != 200:
+        logging.error(f"Failed to update {problem}: {response.text}")
+    else:
+        logging.info(f"🔄 Updated {problem} in Notion")
 
 # ----------------- MAIN -----------------
 if __name__ == "__main__":
@@ -139,17 +139,24 @@ if __name__ == "__main__":
         git_link = get_git_link(file)
         file_commit_date = get_file_commit_date(file)
 
-        if not page_exists(meta["problem"]):
-            logging.info(f"Adding new problem: {meta['problem']}")
-            send_to_notion(
-                meta["problem"],
-                meta["link"],
-                meta["difficulty"],
-                file_commit_date,   # 👈 file-specific commit date
-                git_link,
-                meta["topic"]
-            )
+        page_id, existing_last_solved = find_page(meta["problem"])
+
+        # Only update if new commit date is newer than existing Last Solved
+        update_needed = True
+        if existing_last_solved:
+            try:
+                existing_dt = datetime.fromisoformat(existing_last_solved.replace("Z", "+00:00"))
+                new_dt = datetime.fromisoformat(file_commit_date.replace("Z", "+00:00"))
+                update_needed = new_dt > existing_dt
+            except Exception:
+                update_needed = True
+
+        if page_id:
+            if update_needed:
+                update_page(page_id, meta["problem"], meta["link"], meta["difficulty"], file_commit_date, git_link, meta["topic"])
+            else:
+                logging.info(f"No update needed for {meta['problem']}")
         else:
-            logging.warning(f"{meta['problem']} already exists in Notion, skipping.")
+            create_page(meta["problem"], meta["link"], meta["difficulty"], file_commit_date, git_link, meta["topic"])
 
     logging.info("Notion sync completed.")
