@@ -53,10 +53,15 @@ def parse_metadata(filepath):
     link = re.search(r"^\s*#?\s*Link:\s*(.+)", content, re.MULTILINE)
     diff = re.search(r"^\s*#?\s*Difficulty:\s*(.+)", content, re.MULTILINE)
 
+    # Extract topic from folder (Problems/<Topic>/file.md)
+    folder = os.path.basename(os.path.dirname(filepath))
+    topic = folder if folder and folder != "Problems" else "General"
+
     return {
         "problem": problem.group(1).strip() if problem else os.path.basename(filepath),
         "link": link.group(1).strip() if link else "",
-        "difficulty": diff.group(1).strip().capitalize() if diff else "Medium"
+        "difficulty": diff.group(1).strip().capitalize() if diff else "Medium",
+        "topic": topic
     }
 
 def page_exists(problem_name):
@@ -77,7 +82,7 @@ def page_exists(problem_name):
     results = response.json().get("results", [])
     return len(results) > 0
 
-def send_to_notion(problem, link, difficulty, date, git_link):
+def send_to_notion(problem, link, difficulty, date, git_link, topic):
     """Create a new page in Notion"""
     url = "https://api.notion.com/v1/pages"
     data = {
@@ -86,6 +91,7 @@ def send_to_notion(problem, link, difficulty, date, git_link):
             "Problem": {"title": [{"text": {"content": problem}}]},
             "Problem Link": {"url": link if link else None},
             "Difficulty": {"select": {"name": difficulty}},
+            "Topic": {"select": {"name": topic}},
             "Last Solved": {"date": {"start": date}},
             "Git Link": {"url": git_link}
         }
@@ -109,7 +115,7 @@ if __name__ == "__main__":
 
         if not page_exists(meta["problem"]):
             logging.info(f"Adding new problem: {meta['problem']}")
-            send_to_notion(meta["problem"], meta["link"], meta["difficulty"], commit_date, git_link)
+            send_to_notion(meta["problem"], meta["link"], meta["difficulty"], commit_date, git_link, meta["topic"])
         else:
             logging.warning(f"{meta['problem']} already exists in Notion, skipping.")
 
