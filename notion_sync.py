@@ -60,11 +60,11 @@ def parse_metadata(filepath):
     }
 
 def page_exists(problem_name):
-    """Check if a page with this Problem Name already exists"""
+    """Check if a page with this Problem already exists"""
     url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
     payload = {
         "filter": {
-            "property": "Problem Name",
+            "property": "Problem",
             "title": {
                 "equals": problem_name
             }
@@ -83,7 +83,7 @@ def send_to_notion(problem, link, difficulty, date, git_link):
     data = {
         "parent": {"database_id": DATABASE_ID},
         "properties": {
-            "Problem Name": {"title": [{"text": {"content": problem}}]},
+            "Problem": {"title": [{"text": {"content": problem}}]},
             "Problem Link": {"url": link if link else None},
             "Difficulty": {"select": {"name": difficulty}},
             "Last Solved": {"date": {"start": date}},
