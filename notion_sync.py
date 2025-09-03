@@ -4,6 +4,7 @@ import requests
 import subprocess
 import glob
 import logging
+from datetime import datetime, timedelta
 
 # ----------------- CONFIG -----------------
 NOTION_TOKEN = os.getenv("NOTION_TOKEN")
@@ -86,21 +87,27 @@ def send_to_notion(problem, link, difficulty, date, git_link, topic):
     """Create a new page in Notion"""
     url = "https://api.notion.com/v1/pages"
 
-    # --- Compute Next Revision Date ---
-    from datetime import datetime, timedelta
-
-    next_revision = None
-    if date:  # only calculate if Last Solved is present
+    # --- Normalize Last Solved date to YYYY-MM-DD ---
+    solved_date_obj = None
+    if date:
         try:
-            solved_date = datetime.fromisoformat(date.replace("Z", "+00:00"))
-            if difficulty.lower() == "easy":
-                next_revision = solved_date + timedelta(days=30)
-            elif difficulty.lower() == "medium":
-                next_revision = solved_date + timedelta(days=14)
-            elif difficulty.lower() == "hard":
-                next_revision = solved_date + timedelta(days=7)
+            solved_date_obj = datetime.fromisoformat(date.replace("Z", "+00:00"))
+            solved_date = solved_date_obj.date().isoformat()  # <-- strip time
         except Exception as e:
             logging.error(f"❌ Failed to parse Last Solved date: {e}")
+            solved_date = None
+    else:
+        solved_date = None
+
+    # --- Compute Next Revision Date (only date part) ---
+    next_revision = None
+    if solved_date_obj:
+        if difficulty.lower() == "easy":
+            next_revision = (solved_date_obj + timedelta(days=30)).date().isoformat()
+        elif difficulty.lower() == "medium":
+            next_revision = (solved_date_obj + timedelta(days=14)).date().isoformat()
+        elif difficulty.lower() == "hard":
+            next_revision = (solved_date_obj + timedelta(days=7)).date().isoformat()
 
     data = {
         "parent": {"database_id": DATABASE_ID},
@@ -109,8 +116,8 @@ def send_to_notion(problem, link, difficulty, date, git_link, topic):
             "Problem Link": {"url": link if link else None},
             "Difficulty": {"select": {"name": difficulty}},
             "Topic": {"select": {"name": topic}},
-            "Last Solved": {"date": {"start": date}},
-            "Next Revision Date": {"date": {"start": next_revision.isoformat()}} if next_revision else {},
+            "Last Solved": {"date": {"start": solved_date}} if solved_date else {},
+            "Next Revision Date": {"date": {"start": next_revision}} if next_revision else {},
             "Git Link": {"url": git_link}
         }
     }
