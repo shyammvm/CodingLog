@@ -85,6 +85,23 @@ def page_exists(problem_name):
 def send_to_notion(problem, link, difficulty, date, git_link, topic):
     """Create a new page in Notion"""
     url = "https://api.notion.com/v1/pages"
+
+    # --- Compute Next Revision Date ---
+    from datetime import datetime, timedelta
+
+    next_revision = None
+    if date:  # only calculate if Last Solved is present
+        try:
+            solved_date = datetime.fromisoformat(date.replace("Z", "+00:00"))
+            if difficulty.lower() == "easy":
+                next_revision = solved_date + timedelta(days=30)
+            elif difficulty.lower() == "medium":
+                next_revision = solved_date + timedelta(days=14)
+            elif difficulty.lower() == "hard":
+                next_revision = solved_date + timedelta(days=7)
+        except Exception as e:
+            logging.error(f"❌ Failed to parse Last Solved date: {e}")
+
     data = {
         "parent": {"database_id": DATABASE_ID},
         "properties": {
@@ -93,9 +110,11 @@ def send_to_notion(problem, link, difficulty, date, git_link, topic):
             "Difficulty": {"select": {"name": difficulty}},
             "Topic": {"select": {"name": topic}},
             "Last Solved": {"date": {"start": date}},
+            "Next Revision Date": {"date": {"start": next_revision.isoformat()}} if next_revision else {},
             "Git Link": {"url": git_link}
         }
     }
+
     response = requests.post(url, headers=HEADERS, json=data)
     if response.status_code != 200:
         logging.error(f"Failed to add {problem}: {response.text}")
