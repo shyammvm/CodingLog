@@ -5,6 +5,7 @@ on:
     paths:
       - "Problems/**/*.md"
       - ".github/workflows/notion-sync.yml"
+      - "notion_sync.py"
 
 jobs:
   sync:
