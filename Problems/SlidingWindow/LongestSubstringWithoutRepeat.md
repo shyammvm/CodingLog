@@ -1,3 +1,6 @@
+# Problem: Longest Substring Without Repeat
+# Link: https://leetcode.com/problems/longest-substring-without-repeating-characters/
+# Difficulty: Medium
 ```
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
