@@ -2,6 +2,21 @@
 
 This repo keeps track of all the daily practise coding questions pushed into this repo using Notion and reminds you to revise them regularly.
 
+
+### Features
+
+- Store every solved problem as a **Markdown file** in this repo
+- Automatically extract:
+  - Problem name
+  - Problem link
+  - Difficulty
+  - Topic (from folder structure)
+  - Last solved date (from git commit history)
+  - Next revision date (auto-calculated by difficulty)
+  - GitHub link to code
+- Syncs entries to a Notion database via GitHub Actions
+- Updates Notion only when a problem’s file changes
+
 ### Setup:
 1. Fork this repo :  [Gthub Repo](git@github.com:shyammvm/CodingPractiseAutoRevisionReminder.git)
 2. Save the [Notion page template](https://automatic-alpaca-193.notion.site/Coding-Log-Template-265e48f402248097b944da66533c300d?source=copy_link)
