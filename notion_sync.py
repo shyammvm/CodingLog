@@ -128,7 +128,8 @@ def build_properties(problem, link, difficulty, date, git_link, topic):
         "Topic": {"select": {"name": topic}},
         "Last Solved": {"date": {"start": solved_date}} if solved_date else {},
         "Next Revision Date": {"date": {"start": next_revision}} if next_revision else {},
-        "Git Link": {"url": git_link}
+        "Git Link": {"url": git_link},
+        "Require revision": {"checkbox": True}
     }
 
 def create_page(problem, link, difficulty, date, git_link, topic):
