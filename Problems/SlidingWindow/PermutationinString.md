@@ -24,9 +24,33 @@ class Solution:
         return False
 ```
 
+### Sliding Window O(n):
+```
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        from collections import Counter
+        counts = Counter(s1)
+        n, m = len(s1), len(s2)
+        start, end = 1, m
+        window = Counter(s2[:n])
+        if window == counts:
+            return True
+
+        for i in range(n,m):
+            left = s2[i-n]
+            window[left] -= 1
+            if window[left] == 0:
+                del window[left]
+
+            window[s2[i]] += 1
+            if window == counts:
+                return True
+        return False
+```
+
 ---
 
 ## Notes
 - Approach: 
-- Time Complexity: 
-- Space Complexity: leetcode
+- Time Complexity: O(n)
+- Space Complexity: O(1) : atmost len(s1) elements in the counter
