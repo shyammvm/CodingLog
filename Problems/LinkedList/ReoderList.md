@@ -45,7 +45,7 @@ class Solution:
 
 2. slow/fast pointers
    1. use slow fast pointers and find the middle node
-   2. reverse teh second half
+   2. reverse the second half
    3. merge 1st half and 2nd half alternatively
 ```python
 # Definition for singly-linked list.
