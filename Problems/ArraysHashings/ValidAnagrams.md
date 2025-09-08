@@ -16,9 +16,13 @@ class Solution:
             return True
         return False
 ```
+## Notes
+- Approach:
+- Time Complexity:O(n)
+- Space Complexity:O(k)
 
-If only lowercase characters: 26 bit array (supposed to be faster , but counter is faster in leetcode due to more optimisation/ counter is written in C)
-```
+If only lowercase characters: 26 bit array (supposed to be faster , but counter is faster in leetcode due to more optimisation / counter is written in C)
+```python
 class Solution:
     def isAnagram(self, s: str, t: str) -> bool:
         if len(s) != len(t):
@@ -39,5 +43,5 @@ class Solution:
 
 ## Notes
 - Approach:
-- Time Complexity:
-- Space Complexity:
+- Time Complexity:O(n)
+- Space Complexity:O(1)
