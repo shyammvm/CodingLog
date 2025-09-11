@@ -2,6 +2,9 @@
 
 This repo keeps track of all the daily practise coding questions pushed into this repo using Notion and reminds you to revise them regularly.
 
+### Stats
+![LeetCode Stats](https://leetcard.jacoblin.cool/shyammvm?theme=dark&font=Karma&ext=heatmap)
+
 
 ### Features
 
