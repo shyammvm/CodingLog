@@ -8,6 +8,15 @@
 ## Solution
 
 ### 1. with O(n) space complexity using hashmap and 2 passes
+
+1.  Clone nodes and interleave them
+    1.  For each original node, create a copy and insert it right after the original.
+2.  Assign random pointers
+    1.  Now, for each original node curr, its copy is curr.next.
+    2.  curr.random.next will be the copied version of curr.random.
+3.  Separate the two lists
+
+Example:
 ```python
 """
 # Definition for a Node.
