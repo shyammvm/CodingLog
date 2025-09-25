@@ -1,5 +1,6 @@
 name: Sync LeetCode to Notion and Update README
 
+# Trigger on changes to problems, workflow, or manually
 on:
   push:
     paths:
@@ -9,16 +10,19 @@ on:
       - "update_readme.py"
   workflow_dispatch:
 
+# Give the workflow permission to push to the repo
+permissions:
+  contents: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repo
+      # Checkout the repo with full history and proper token
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       # Setup Python
@@ -27,7 +31,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      # Install dependencies for Notion sync
+      # Install dependencies
       - name: Install dependencies
         run: pip install requests
 
@@ -38,15 +42,15 @@ jobs:
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python notion_sync.py
 
-      # Update README with problem list
-      - name: Update README.md
+      # Update README.md
+      - name: Update README
         run: python update_readme.py
 
-      # Commit changes using GITHUB_TOKEN
-      - name: Commit changes
+      # Commit and push changes
+      - name: Commit and push README changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
           git diff --cached --quiet || git commit -m "Update README with problem list"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/shyammvm/CodingLog.git HEAD:master
+          git push
