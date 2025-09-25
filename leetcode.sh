@@ -28,14 +28,14 @@ cat > "$FILE" <<EOL
 ---
 
 ## Solution
-
+## 1. Approach 1
 \`\`\`python
 # Your code here
 \`\`\`
 
 ---
 
-## Notes
+#### Notes
 - Approach:
 - Time Complexity:
 - Space Complexity:
