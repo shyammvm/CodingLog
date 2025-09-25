@@ -5,6 +5,8 @@ Repo to keep track of all the coding problems solved and to remind me to revise 
 
 ## ArraysHashings
 
+## ArraysHashings
+
 - [ContainsDuplicate](Problems/ArraysHashings/ContainsDuplicate.md)
 - [ValidAnagrams](Problems/ArraysHashings/ValidAnagrams.md)
 
