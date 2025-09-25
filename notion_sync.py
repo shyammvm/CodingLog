@@ -170,8 +170,8 @@ if __name__ == "__main__":
         update_needed = True
         if existing_last_solved:
             try:
-                existing_dt = datetime.fromisoformat(existing_last_solved.replace("Z", "+00:00"))
-                new_dt = datetime.fromisoformat(file_commit_date.replace("Z", "+00:00"))
+                existing_dt = datetime.fromisoformat(existing_last_solved)
+                new_dt = datetime.fromisoformat(file_commit_date)
                 update_needed = new_dt > existing_dt
             except Exception:
                 update_needed = True

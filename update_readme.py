@@ -19,7 +19,7 @@ def update_readme(readme_path="README.md", base_dir="Problems"):
         lines = f.readlines()
     
     # Keep the first 9 lines intact
-    header = "".join(lines[:6]) if len(lines) >= 9 else "".join(lines)
+    header = "".join(lines[:5]) if len(lines) >= 9 else "".join(lines)
     
     # Generate problem list
     problem_list = generate_problem_list(base_dir)
