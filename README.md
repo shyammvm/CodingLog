@@ -27,3 +27,7 @@ Repo to keep track of all the coding problems solved and to remind me to revise 
 - [LongestSubstringWithoutRepeat](Problems/SlidingWindow/LongestSubstringWithoutRepeat.md)
 - [MinimumWindowSubstring](Problems/SlidingWindow/MinimumWindowSubstring.md)
 - [PermutationinString](Problems/SlidingWindow/PermutationinString.md)
+
+## Trees
+
+- [InvertTree](Problems/Trees/InvertTree.md)
