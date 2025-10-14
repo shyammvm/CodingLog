@@ -31,3 +31,4 @@ Repo to keep track of all the coding problems solved and to remind me to revise 
 ## Trees
 
 - [InvertTree](Problems/Trees/InvertTree.md)
+- [MaxDepthofBinaryTree](Problems/Trees/MaxDepthofBinaryTree.md)
