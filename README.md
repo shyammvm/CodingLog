@@ -17,6 +17,7 @@ Repo to keep track of all the coding problems solved and to remind me to revise 
 
 - [AddTwoNumbers](Problems/LinkedList/AddTwoNumbers.md)
 - [CopyListWithRandomPointer](Problems/LinkedList/CopyListWithRandomPointer.md)
+- [FindTheDuplicateNumber](Problems/LinkedList/FindTheDuplicateNumber.md)
 - [RemoveNthNodeFromTheEndOfList](Problems/LinkedList/RemoveNthNodeFromTheEndOfList.md)
 - [ReoderList](Problems/LinkedList/ReoderList.md)
 
