@@ -17,11 +17,11 @@ Repo to keep track of all the coding problems solved and to remind me to revise 
 
 ## LinkedList
 
-- [AddTwoNumbers](Problems/LinkedList/AddTwoNumbers.md)
-- [CopyListWithRandomPointer](Problems/LinkedList/CopyListWithRandomPointer.md)
-- [FindTheDuplicateNumber](Problems/LinkedList/FindTheDuplicateNumber.md)
-- [RemoveNthNodeFromTheEndOfList](Problems/LinkedList/RemoveNthNodeFromTheEndOfList.md)
-- [ReoderList](Problems/LinkedList/ReoderList.md)
+- [AddTwoNumbers](Problems/LinkedList/AddTwoNumbers.md) - Medium
+- [CopyListWithRandomPointer](Problems/LinkedList/CopyListWithRandomPointer.md) - Medium
+- [FindTheDuplicateNumber](Problems/LinkedList/FindTheDuplicateNumber.md) - Medium
+- [RemoveNthNodeFromTheEndOfList](Problems/LinkedList/RemoveNthNodeFromTheEndOfList.md) - Medium
+- [ReoderList](Problems/LinkedList/ReoderList.md) - Medium
 
 ## SlidingWindow
 

@@ -6,7 +6,7 @@
 ---
 
 ## Solution
-1. Brute Force but beats 100% in leetcode:
+### 1. Brute Force but beats 100% in leetcode:
 ```python
 # Definition for singly-linked list.
 # class ListNode:
@@ -38,12 +38,12 @@ class Solution:
     
         return head        
 ```
-## Notes
+### Notes
 - Approach:
 - Time Complexity:O(n) + O(n) = O(n)
 - Space Complexity: O(n) (Array)
 
-2. slow/fast pointers
+### 2. slow/fast pointers
    1. use slow fast pointers and find the middle node
    2. reverse the second half
    3. merge 1st half and 2nd half alternatively
@@ -86,6 +86,6 @@ class Solution:
         
         return head
 ```
-
-Time Complexity : O(n)
-space Complexity : O(1)
+### Notes
+- Time Complexity : O(n)
+- space Complexity : O(1)
