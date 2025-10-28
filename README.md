@@ -4,7 +4,7 @@
 Repo to keep track of all the coding problems solved and to remind me to revise them on set durations.
 
 
-## Count: 15 [ Easy: 5 | Medium: 9 | Hard: 1 ]
+## Count: 16 [ Easy: 5 | Medium: 9 | Hard: 2 ]
 
 ## ArraysHashings
 
@@ -30,6 +30,10 @@ Repo to keep track of all the coding problems solved and to remind me to revise 
 - [LongestSubstringWithoutRepeat](Problems/SlidingWindow/LongestSubstringWithoutRepeat.md) - Medium
 - [MinimumWindowSubstring](Problems/SlidingWindow/MinimumWindowSubstring.md) - Hard
 - [PermutationinString](Problems/SlidingWindow/PermutationinString.md) - Medium
+
+## Stack
+
+- [LargestRectangleInHistogram](Problems/Stack/LargestRectangleInHistogram.md) - Hard
 
 ## Trees
 
