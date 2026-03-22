@@ -4,7 +4,7 @@
 Repo to keep track of all the coding problems solved and to remind me to revise them on set durations.
 
 
-## Count: 16 [ Easy: 5 | Medium: 9 | Hard: 2 ]
+## Count: 17 [ Easy: 6 | Medium: 9 | Hard: 2 ]
 
 ## ArraysHashings
 
@@ -14,6 +14,10 @@ Repo to keep track of all the coding problems solved and to remind me to revise 
 ## BinarySearch
 
 - [TimeBasedKey-ValueStore](Problems/BinarySearch/TimeBasedKey-ValueStore.md) - Medium
+
+## BitmManupilation
+
+- [ComplimentOfBase10Integer](Problems/BitmManupilation/ComplimentOfBase10Integer.md) - Easy
 
 ## LinkedList
 
