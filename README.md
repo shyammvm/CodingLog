@@ -15,9 +15,9 @@ Repo to keep track of all the coding problems solved and to remind me to revise 
 
 - [TimeBasedKey-ValueStore](Problems/BinarySearch/TimeBasedKey-ValueStore.md) - Medium
 
-## BitmManupilation
+## BitManupilation
 
-- [ComplimentOfBase10Integer](Problems/BitmManupilation/ComplimentOfBase10Integer.md) - Easy
+- [ComplimentOfBase10Integer](Problems/BitManupilation/ComplimentOfBase10Integer.md) - Easy
 
 ## LinkedList
 
